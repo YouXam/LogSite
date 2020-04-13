@@ -1,0 +1,44 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sscaffold-css@0.1.1/sscaffold.min.css" integrity="sha256-tNrNp6fPTVnhpywTjgNV4jCx6W9d1wuALpwVmAQEYcs=" crossorigin="anonymous">
+        <style>
+            hr{
+                border-top: .1rem solid #cccccc;
+            }
+            small{
+                font-size: 50%;
+            }
+            .main{
+                width:80%;
+                margin-left:10%;
+                font-size: 120%;
+            }
+            .text{
+                font-weight: bold;
+                font-size: 150%;
+            }
+            .time{
+                color: #969696;
+                font-size: 80%;
+            }
+            .desp{
+                color: #000;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="main">
+            <h1>日志<small> | <a href="/download">Json</a></small></h1>
+            <hr/>
+            <% for(let i of list){%>
+                <span class="text"><%= i.text %></span>
+                <br/>
+                <span class="time"><%= i.time %></span>
+                <br/>
+                <span class="desp"><%= i.desp %></span>
+                <hr/>
+            <% } %>
+        </div>
+    </body>
+</html>
