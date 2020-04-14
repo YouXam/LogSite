@@ -5,13 +5,13 @@ const https = require('https');
 const fs = require('fs');
 const { join } = require('path');
 const app = express();
-const privateKey  = fs.readFileSync('./keys/private.pem', 'utf8');
-const certificate = fs.readFileSync('./keys/file.crt', 'utf8');
+const privateKey  = fs.readFileSync('./keys/server.pem', 'utf8');
+const certificate = fs.readFileSync('./keys/server.crt', 'utf8');
 const credentials = {key: privateKey, cert: certificate};
 function send(text = "空消息", desp = '') {
     request({
         'method': 'POST',
-        'url': 'https://sc.ftqq.com/SCKEY.send',
+        'url': 'https://sc.ftqq.com/***.send',
         formData: { 'text': text, 'desp': desp }
     });
 }
