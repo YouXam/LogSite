@@ -1,16 +1,17 @@
 const request = require('request');
 const express = require('express');
 const bodyParser = require('body-parser');
+const https = require('https');
 const fs = require('fs');
 const { join } = require('path');
 const app = express();
-app.set('view engine', 'ejs');
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
+const privateKey  = fs.readFileSync('./keys/private.pem', 'utf8');
+const certificate = fs.readFileSync('./keys/file.crt', 'utf8');
+const credentials = {key: privateKey, cert: certificate};
 function send(text = "空消息", desp = '') {
     request({
         'method': 'POST',
-        'url': 'https://sc.ftqq.com/***.send',
+        'url': 'https://sc.ftqq.com/SCKEY.send',
         formData: { 'text': text, 'desp': desp }
     });
 }
@@ -24,6 +25,9 @@ function getTime() {
     const s = date.getSeconds()
     return y + '-' + (mo < 10 ? '0' + mo : mo) + '-' + (d < 10 ? '0' + d : d) + ' ' + (h < 10 ? '0' + h : h) + ':' + (m < 10 ? '0' + m : m) + ':' + (s < 10 ? '0' + s : s);
 }
+app.set('view engine', 'ejs');
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 app.all('*', function(req, res, next) {
     res.header("Access-Control-Allow-Origin", "*");
     res.header("Access-Control-Allow-Headers", "*");
@@ -41,8 +45,7 @@ app.get('/', (req, res) => {
 })
 app.post("/", (req, res) => {
     if (!req.body.text) {
-        res.status(400).send("Invalid arguments");
-
+        res.status(400).send("Invalid arguments")
         return
     }
     send(req.body.text,req.body.desp)
@@ -59,12 +62,15 @@ app.post("/", (req, res) => {
     });
 });
 app.get('/download', (req, res) => {
-    console.log("download")
     res.sendFile(join(__dirname, 'data.json'));
 })
+const httpsServer = https.createServer(credentials, app);
 fs.exists("data.json", (exists) => {
     if (!exists) fs.writeFileSync("data.json", '{"list":[]}');
-    app.listen(3000, () => {
-        console.log('服务器启动');
+    httpsServer.listen(3000, function() {
+        console.log('HTTPS Server is running');
     });
+    // app.listen(3000, () => {
+    //     console.log('服务器启动');
+    // });
 })
