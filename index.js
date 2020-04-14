@@ -10,7 +10,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 function send(text = "空消息", desp = '') {
     request({
         'method': 'POST',
-        'url': 'https://sc.ftqq.com/SCKEY.send',
+        'url': 'https://sc.ftqq.com/***.send',
         formData: { 'text': text, 'desp': desp }
     });
 }
@@ -24,6 +24,12 @@ function getTime() {
     const s = date.getSeconds()
     return y + '-' + (mo < 10 ? '0' + mo : mo) + '-' + (d < 10 ? '0' + d : d) + ' ' + (h < 10 ? '0' + h : h) + ':' + (m < 10 ? '0' + m : m) + ':' + (s < 10 ? '0' + s : s);
 }
+app.all('*', function(req, res, next) {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "*");
+    // res.header("Access-Control-Allow-Methods","POST,GET,OPTIONS");
+    next();
+});
 app.get('/', (req, res) => {
     fs.readFile('data.json', function (err, raw) {
         if (err) {
@@ -35,7 +41,8 @@ app.get('/', (req, res) => {
 })
 app.post("/", (req, res) => {
     if (!req.body.text) {
-        res.status(400).send("Invalid arguments")
+        res.status(400).send("Invalid arguments");
+
         return
     }
     send(req.body.text,req.body.desp)
@@ -52,6 +59,7 @@ app.post("/", (req, res) => {
     });
 });
 app.get('/download', (req, res) => {
+    console.log("download")
     res.sendFile(join(__dirname, 'data.json'));
 })
 fs.exists("data.json", (exists) => {
